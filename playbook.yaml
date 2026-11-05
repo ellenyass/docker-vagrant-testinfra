@@ -1,0 +1,45 @@
+
+---
+- name: Configurar servidor Web Apache
+  hosts: web
+  become: true
+
+  tasks:
+
+    - name: Atualizar lista de pacotes
+      ansible.builtin.apt:
+        update_cache: yes
+        cache_valid_time: 3600
+
+    - name: Instalar Apache
+      ansible.builtin.apt:
+        name: apache2
+        state: present
+
+    - name: Iniciar Apache e habilitar inicializacao automatica
+      ansible.builtin.service:
+        name: apache2
+        state: started
+        enabled: yes
+
+    - name: Criar pagina inicial HTML
+      ansible.builtin.copy:
+        dest: /var/www/html/index.html
+        content: |
+          <!DOCTYPE html>
+          <html lang="pt-BR">
+          <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Projeto de Infraestrutura</title>
+          </head>
+          <body>
+              <h1>Servidor Web funcionando!</h1>
+              <p>Infraestrutura configurada com Ansible.</p>
+              <p>Ambiente provisionado com Docker e Vagrant.</p>
+          </body>
+          </html>
+        owner: root
+        group: root
+        mode: '0644'
+
